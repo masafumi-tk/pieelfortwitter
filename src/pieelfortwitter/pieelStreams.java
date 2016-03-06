@@ -85,7 +85,7 @@ public class pieelStreams
     }
     
     
-    //“ú–{‚ªŠÜ‚Ü‚ê‚Ä‚¢‚é‚©‚Ì”»’f
+    //“ú–{‚ªŠÜ‚Ü‚ê‚Ä‚¢‚é‚©‚Ì”»’fhoge
     public static boolean isJap(String str)
     {
     	for(int i = 0 ; i < str.length() ; i++) {
