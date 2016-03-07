@@ -3,6 +3,11 @@ package pieelfortwitter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.TreeMap;
+
+import org.atilika.kuromoji.Token;
+import org.atilika.kuromoji.Tokenizer;
 
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -11,39 +16,55 @@ import twitter4j.StatusListener;
 import twitter4j.TwitterException;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
-import twitter4j.User;
 
-
- 
 public class pieelStreams 
 {	  
     public static void main(String[] args) throws TwitterException 
     {
     	TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-    	SearchScore searchscore = new SearchScore();
-    	int count = 0;
+    	SearchScore seachscore = new SearchScore();
+    	String crlf = System.getProperty("line.separator");  //OS依存改行コード
+    	TreeMap<String,Double> scoreCounter = new TreeMap<String,Double>();
     	
     	StatusListener listener = new StatusListener() {
+    		
     		@Override
     	    public void onStatus(Status status) {
+    			
     			if(isJap(status.getText()) == true)
     			{
-    				User user = status.getUser();
     				  try
     				  {
-    			            File file = new File("Tweets/tweetSample.txt");
+    					    double score = seachscore.getFeelingScore(status.getText());
+    					  	System.out.println("Tweet:"+status.getText());
+    					  	System.out.println("Score:"+score);
+    			            File file = new File("Tweets/20160307.txt");
     			            FileWriter fw = new FileWriter(file, true);
-    			            fw.write("tweet"+count+":"+status.getText()+"\n");
-    			            fw.write("score:"+searchscore.getFeelingScore(status.getText())+"\n");
-    			            fw.write("\n");
+    			            fw.write("tweet"+":"+status.getText()+crlf);
+    			            fw.write("score:"+score+crlf);
+    			            fw.write(crlf);
     			            fw.close();
-
+    			            
+    			            //名詞のみをカウント
+    			            for(String word:seachscore.getWordList(status.getText())){
+    			            	if(isNoun(word)&&isJap(word)){
+    			            		if(!scoreCounter.containsKey(word)){
+    			            			scoreCounter.put(word, score);
+    			            			System.out.println("newWord!:"+word+"+"+score);
+    			            		}
+    			            		else{
+    			            			System.out.println("existWord!:"+word+",score:"+scoreCounter.get(word).intValue()+"+"+score);
+    			            			scoreCounter.put(word,scoreCounter.get(word).intValue()+score);
+    			            		}
+    			            	}
+    			            }
+    			           
     			       } 
     				  catch(IOException e) 
     				  {
     					  System.out.println(e);
     			      }
-    				System.out.println(status.getText());
+    				  
     			}
     			
     		}
@@ -108,5 +129,20 @@ public class pieelStreams
     	}
     	return false;
     }
+    
+    public static boolean isNoun(String str)throws IOException
+    {
+    	Tokenizer tokenizer = Tokenizer.builder().build();
+    	List<Token> tokens = tokenizer.tokenize(str);
+    	String[] word2 = null;
+    	for (Token token : tokens) {
+    		word2 = token.getPartOfSpeech().split(",",0);
+    	}
+    	if(word2[0].equals("名詞"))
+    		return true;
+    	else
+    		return false;
+    }
+    
     
 }
