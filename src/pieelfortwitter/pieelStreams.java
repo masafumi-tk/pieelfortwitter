@@ -46,13 +46,17 @@ public class pieelStreams
     			            fw.close();
     			            
     			            //–¼ŽŒ‚Ì‚Ý‚ðƒJƒEƒ“ƒg
-    			            for(String word:seachscore.getWordList(status.getText())){
-    			            	if(isNoun(word)&&isJap(word)){
-    			            		if(!scoreCounter.containsKey(word)){
+    			            for(String word:seachscore.getWordList(status.getText()))
+    			            {
+    			            	if(isNoun(word)&&isJap(word))
+    			            	{
+    			            		if(!scoreCounter.containsKey(word))
+    			            		{
     			            			scoreCounter.put(word, score);
     			            			System.out.println("newWord!:"+word+"+"+score);
     			            		}
-    			            		else{
+    			            		else
+    			            		{
     			            			System.out.println("existWord!:"+word+",score:"+scoreCounter.get(word).intValue()+"+"+score);
     			            			scoreCounter.put(word,scoreCounter.get(word).intValue()+score);
     			            		}
