@@ -11,7 +11,7 @@ import java.util.List;
 import org.atilika.kuromoji.Token;
 import org.atilika.kuromoji.Tokenizer;
 
-public class SearchScore {
+public class SearchScore{
 	HashMap<String,Double> feelMap = new HashMap<String,Double>();
 	FileReader filereader =null;
 	BufferedReader br = null;
@@ -81,5 +81,24 @@ public class SearchScore {
 			
 		return wordList;
 	}
+	
+    public boolean isNoun(String str)throws IOException
+    {
+    	Tokenizer tokenizer = Tokenizer.builder().build();
+    	List<Token> tokens = tokenizer.tokenize(str);
+    	String[] word2 = null;
+    	for (Token token : tokens) 
+    	{
+    		word2 = token.getPartOfSpeech().split(",",0);
+    	}
+    	if(word2[0].equals("–¼ŽŒ")){
+    		System.out.println(word2[0]+"test1");
+    		return true;
+    	}
+    	else{
+    		System.out.println(word2[0]+"test2");
+    		return false;
+    	}
+    }
 	
 }
